@@ -6,6 +6,7 @@ use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductImageController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
@@ -24,9 +25,15 @@ Route::get('/home', [HomeController::class, 'index'])
 Route::middleware(['auth'])->group(function () {
     // Catalog
     Route::get('/catalog', [CatalogController::class, 'index'])->name('catalog');
+    Route::get('/catalog/create', [CatalogController::class, 'create'])->name('product.create');
+    Route::post('/catalog', [CatalogController::class, 'store'])->name('product.store');
     Route::get('/catalog/{id}', [CatalogController::class, 'show'])->name('product.show');
     Route::post('/catalog/{id}/favorite', [CatalogController::class, 'toggleFavorite'])->name('product.favorite');
     Route::post('/catalog/{productId}/reviews/{reviewId}/like', [CatalogController::class, 'toggleReviewLike'])->name('review.like');
+
+    // Product Images
+    Route::post('/product-images', [ProductImageController::class, 'store'])->name('product.images.store');
+    Route::delete('/product-images/{path}', [ProductImageController::class, 'destroy'])->name('product.images.destroy');
 
     // Favorites
     Route::get('/favorites', [FavoriteController::class, 'index'])->name('favorites');

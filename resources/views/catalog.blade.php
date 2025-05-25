@@ -8,37 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/catalog.css') }}">
 </head>
 <body>
-    <!-- Header -->
-    <header class="main-header">
-        <div class="header-content">
-            <div class="logo">
-                <a href="{{ route('home') }}">ECONNECT</a>
-            </div>
-            <div class="user-section">
-                <form class="search-form" action="{{ route('catalog') }}" method="GET">
-                    <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
-                </form>
-                <div class="cart-count">
-                    <a href="{{ route('cart') }}">
-                        <img src="{{ asset('images/cart.png') }}" alt="Cart">
-                        <span class="count">3</span>
-                    </a>
-                </div>
-                <div class="user-profile">
-                    <span>Veronica G</span>
-                </div>
-            </div>
-        </div>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="{{ route('home') }}">Home</a></li>
-                <li><a href="{{ route('catalog') }}" class="active">Catalog</a></li>
-                <li><a href="{{ route('favorites') }}">Favorites</a></li>
-                <li><a href="{{ route('cart') }}">Cart</a></li>
-                <li><a href="{{ route('orders') }}">Order History</a></li>
-            </ul>
-        </nav>
-    </header>
+    @include('layouts.header')
 
     <!-- Main Content -->
     <main class="catalog-content">
@@ -56,7 +26,8 @@
                             @foreach($categories as $category)
                             <div class="checkbox-group">
                                 <input type="checkbox" id="{{ strtolower(str_replace(' & ', '-', $category)) }}" 
-                                       name="category[]" value="{{ $category }}">
+                                       name="category[]" value="{{ $category }}"
+                                       {{ in_array($category, request('category', [])) ? 'checked' : '' }}>
                                 <label for="{{ strtolower(str_replace(' & ', '-', $category)) }}">{{ $category }}</label>
                             </div>
                             @endforeach
@@ -68,39 +39,78 @@
             <!-- Product Grid -->
             <div class="product-section">
                 <div class="product-controls">
-                    <span class="product-count">Showing {{ count($products) }} Products</span>
+                    <span class="product-count">Showing {{ $products->count() }} Products</span>
                     <div class="sort-dropdown">
                         <select name="sort" id="sort">
-                            <option value="popular">Popular</option>
-                            <option value="newest">Newest</option>
-                            <option value="price-low">Price: Low to High</option>
-                            <option value="price-high">Price: High to Low</option>
+                            <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Popular</option>
+                            <option value="newest" {{ request('sort') == 'newest' ? 'selected' : '' }}>Newest</option>
+                            <option value="price-low" {{ request('sort') == 'price-low' ? 'selected' : '' }}>Price: Low to High</option>
+                            <option value="price-high" {{ request('sort') == 'price-high' ? 'selected' : '' }}>Price: High to Low</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="product-grid">
                     @foreach($products as $product)
-                    <div class="product-card">
-                        <img src="{{ asset($product->main_image) }}" alt="{{ $product->name }}">
-                        <div class="product-info">
-                            <h3>{{ $product->name }}</h3>
-                            <p class="price">Rp{{ number_format($product->price, 0, ',', ',') }} / {{ $product->unit }}</p>
-                            <div class="seller-info">
-                                <span class="seller">{{ $product->seller->name }}</span>
-                                <div class="rating">
-                                    <span>{{ number_format($product->average_rating, 1) }} ({{ $product->reviews_count }})</span>
-                                    <img src="{{ asset('images/star.png') }}" alt="Rating">
+                    <a href="{{ route('product.show', $product->id) }}" class="product-link">
+                        <div class="product-card">
+                            @if($product->main_image)
+                                <img src="{{ Storage::url($product->main_image) }}" 
+                                     alt="{{ $product->name }}"
+                                     onerror="this.src='{{ asset('images/placeholder.png') }}'"
+                                     loading="lazy">
+                            @else
+                                <img src="{{ asset('images/placeholder.png') }}" alt="No image available">
+                            @endif
+                            <div class="product-info">
+                                <h3>{{ $product->name }}</h3>
+                                <p class="price">Rp{{ number_format($product->price, 0, ',', '.') }} / {{ $product->unit }}</p>
+                                <div class="seller-info">
+                                    <span class="seller">{{ $product->seller->name }}</span>
+                                    <div class="rating">
+                                        <span>{{ number_format($product->average_rating, 1) }} ({{ $product->reviews_count }})</span>
+                                        <img src="{{ asset('images/star.png') }}" alt="Rating">
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </a>
                     @endforeach
                 </div>
 
-                <button class="load-more">Show More</button>
+                @if($products->hasPages())
+                    <div class="pagination">
+                        {{ $products->links() }}
+                    </div>
+                @endif
             </div>
         </div>
     </main>
+
+    <script>
+        // Handle category filter changes
+        document.querySelectorAll('input[name="category[]"]').forEach(checkbox => {
+            checkbox.addEventListener('change', () => {
+                const form = checkbox.closest('form');
+                const checkedCategories = Array.from(form.querySelectorAll('input[name="category[]"]:checked'))
+                    .map(input => input.value);
+                
+                const url = new URL(window.location.href);
+                if (checkedCategories.length > 0) {
+                    url.searchParams.set('category', checkedCategories);
+                } else {
+                    url.searchParams.delete('category');
+                }
+                window.location.href = url.toString();
+            });
+        });
+
+        // Handle sort changes
+        document.getElementById('sort').addEventListener('change', function() {
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort', this.value);
+            window.location.href = url.toString();
+        });
+    </script>
 </body>
 </html> 

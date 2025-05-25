@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CatalogController extends Controller
 {
@@ -61,6 +62,52 @@ class CatalogController extends Controller
         $relatedProducts = $product->relatedProducts();
 
         return view('product.show', compact('product', 'relatedProducts'));
+    }
+
+    public function create()
+    {
+        return view('product.create');
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
+            'category' => 'required|string',
+            'price' => 'required|numeric|min:0',
+            'unit' => 'required|string|in:kg,m,pcs',
+            'stock' => 'required|integer|min:0',
+            'main_image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'additional_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        // Handle main image
+        $mainImagePath = $request->file('main_image')->store('products', 'public');
+
+        // Handle additional images
+        $additionalImagePaths = [];
+        if ($request->hasFile('additional_images')) {
+            foreach ($request->file('additional_images') as $image) {
+                $additionalImagePaths[] = $image->store('products', 'public');
+            }
+        }
+
+        // Create product
+        $product = Product::create([
+            'name' => $request->name,
+            'description' => $request->description,
+            'category' => $request->category,
+            'price' => $request->price,
+            'unit' => $request->unit,
+            'stock' => $request->stock,
+            'main_image' => $mainImagePath,
+            'additional_images' => $additionalImagePaths,
+            'seller_id' => auth()->id()
+        ]);
+
+        return redirect()->route('product.show', $product->id)
+            ->with('success', 'Product added successfully');
     }
 
     public function toggleFavorite(Request $request, $id)

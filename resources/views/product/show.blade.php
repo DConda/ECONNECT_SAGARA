@@ -3,162 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ $product['name'] }} - Econnect</title>
+    <title>{{ $product->name }} - Econnect</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/product.css') }}">
 </head>
 <body>
-    <!-- Header -->
-    <header class="main-header">
-        <div class="header-content">
-            <div class="logo">
-                <a href="{{ route('home') }}">ECONNECT</a>
-            </div>
-            <div class="user-section">
-                <form class="search-form" action="{{ route('catalog') }}" method="GET">
-                    <input type="text" name="search" placeholder="Search..." value="{{ request('search') }}">
-                </form>
-                <div class="cart-count">
-                    <a href="{{ route('cart') }}">
-                        <img src="{{ asset('images/cart.png') }}" alt="Cart">
-                        <span class="count">3</span>
-                    </a>
-                </div>
-                <div class="user-profile">
-                    <span>Veronica G</span>
-                </div>
-            </div>
-        </div>
-        <nav class="main-nav">
-            <ul>
-                <li><a href="{{ route('home') }}">Home</a></li>
-                <li><a href="{{ route('catalog') }}" class="active">Catalog</a></li>
-                <li><a href="{{ route('favorites') }}">Favorites</a></li>
-                <li><a href="{{ route('cart') }}">Cart</a></li>
-                <li><a href="{{ route('orders') }}">Order History</a></li>
-            </ul>
-        </nav>
-    </header>
+    @include('layouts.header')
 
     <!-- Main Content -->
     <main class="product-content">
+        <div class="breadcrumb">
+            <a href="{{ route('catalog') }}">Catalog</a>
+            <span>/</span>
+            <span>{{ $product->name }}</span>
+        </div>
+
         <div class="product-container">
             <!-- Product Images -->
             <div class="product-images">
                 <div class="main-image">
-                    <img src="{{ asset('images/' . $product['images']['main']) }}" alt="{{ $product['name'] }}">
+                    <img src="{{ Storage::url($product->main_image) }}" 
+                         alt="{{ $product->name }}"
+                         onerror="this.src='{{ asset('images/placeholder.png') }}'">
                 </div>
+                @if($product->additional_images)
                 <div class="thumbnail-images">
-                    @foreach($product['images']['thumbnails'] as $thumbnail)
+                    @foreach(json_decode($product->additional_images) as $image)
                     <div class="thumbnail">
-                        <img src="{{ asset('images/' . $thumbnail) }}" alt="Product thumbnail">
+                        <img src="{{ Storage::url($image) }}" 
+                             alt="{{ $product->name }}"
+                             onerror="this.src='{{ asset('images/placeholder.png') }}'">
                     </div>
                     @endforeach
                 </div>
+                @endif
             </div>
 
-            <!-- Product Details -->
-            <div class="product-details">
-                <div class="product-header">
-                    <h1>{{ $product['name'] }}</h1>
-                    <div class="actions">
-                        <button class="favorite-btn">
-                            <img src="{{ asset('images/heart.png') }}" alt="Add to favorites">
-                        </button>
-                        <button class="share-btn">
-                            <img src="{{ asset('images/share.png') }}" alt="Share">
-                        </button>
+            <!-- Product Info -->
+            <div class="product-info">
+                <h1>{{ $product->name }}</h1>
+                <div class="price-section">
+                    <p class="price">Rp{{ number_format($product->price, 0, ',', '.') }} / {{ $product->unit }}</p>
+                    <div class="rating">
+                        <span>{{ number_format($product->average_rating, 1) }}</span>
+                        <img src="{{ asset('images/star.png') }}" alt="Rating">
+                        <span>({{ $product->reviews_count }} reviews)</span>
                     </div>
                 </div>
 
-                <div class="price-section">
-                    <h2>Rp{{ number_format($product['price'], 0, ',', ',') }} / {{ $product['unit'] }}</h2>
+                <div class="seller-section">
+                    <p>Sold by <span class="seller-name">{{ $product->seller->name }}</span></p>
                 </div>
 
                 <div class="description">
-                    <p>{{ $product['description'] }}</p>
+                    <h2>Description</h2>
+                    <p>{{ $product->description }}</p>
                 </div>
 
-                <div class="variants">
-                    <h3>Variants</h3>
-                    <div class="variant-options">
-                        @foreach($product['variants'] as $variant)
-                        <button class="variant-btn {{ $loop->first ? 'active' : '' }}">{{ $variant }}</button>
-                        @endforeach
-                    </div>
+                <div class="stock-info">
+                    <p>Stock: {{ $product->stock }} {{ $product->unit }}s available</p>
                 </div>
 
-                <div class="quantity">
-                    <h3>Quantity</h3>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn minus">-</button>
-                        <input type="number" value="1" min="1">
-                        <button class="quantity-btn plus">+</button>
-                    </div>
-                </div>
-
-                <button class="buy-now-btn">Buy Now</button>
-
-                <div class="seller-info">
-                    <img src="{{ asset('images/seller-avatar.png') }}" alt="{{ $product['seller']['name'] }}">
-                    <div class="seller-details">
-                        <h3>{{ $product['seller']['name'] }}</h3>
-                        <p>{{ $product['seller']['location'] }}</p>
-                        <div class="rating">
-                            <span>{{ $product['seller']['rating'] }}</span>
-                            <img src="{{ asset('images/star.png') }}" alt="Rating">
-                            <span>({{ $product['seller']['reviews'] }})</span>
+                <form action="{{ route('cart.add', $product->id) }}" method="POST" class="purchase-form">
+                    @csrf
+                    <div class="quantity-control">
+                        <label for="quantity">Quantity ({{ $product->unit }})</label>
+                        <div class="quantity-buttons">
+                            <button type="button" class="qty-btn minus">-</button>
+                            <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ $product->stock }}">
+                            <button type="button" class="qty-btn plus">+</button>
                         </div>
                     </div>
-                </div>
+
+                    <div class="action-buttons">
+                        <button type="submit" class="add-to-cart">Add to Cart</button>
+                        <button type="button" class="favorite-btn" onclick="toggleFavorite({{ $product->id }})">
+                            <img src="{{ asset('images/heart.png') }}" alt="Favorite">
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
 
         <!-- Reviews Section -->
         <div class="reviews-section">
-            <h2>Buyer Reviews</h2>
-            @foreach($product['reviews'] as $review)
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="reviewer-info">
-                        <img src="{{ asset('images/user-avatar.png') }}" alt="{{ $review['user'] }}">
-                        <div>
-                            <h3>{{ $review['user'] }}</h3>
-                            <div class="rating">
-                                @for($i = 0; $i < $review['rating']; $i++)
-                                <img src="{{ asset('images/star.png') }}" alt="star">
-                                @endfor
+            <h2>Reviews</h2>
+            @if($product->reviews->count() > 0)
+                @foreach($product->reviews as $review)
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="reviewer-info">
+                            <span class="reviewer-name">{{ $review->user->name }}</span>
+                            <div class="review-rating">
+                                <span>{{ $review->rating }}</span>
+                                <img src="{{ asset('images/star.png') }}" alt="Rating">
                             </div>
                         </div>
+                        <span class="review-date">{{ $review->created_at->format('M d, Y') }}</span>
                     </div>
-                    <span class="review-date">{{ $review['date'] }}</span>
-                </div>
-                <p class="review-text">{{ $review['comment'] }}</p>
-                <div class="review-actions">
-                    <button class="like-btn">
-                        <img src="{{ asset('images/like.png') }}" alt="Like">
-                        <span>{{ $review['likes'] }}</span>
-                    </button>
-                </div>
-            </div>
-            @endforeach
-        </div>
-
-        <!-- Related Products -->
-        <div class="related-products">
-            <h2>More Products from This Shop</h2>
-            <div class="product-grid">
-                @foreach($product['related_products'] as $related)
-                <div class="product-card">
-                    <img src="{{ asset('images/' . $related['image']) }}" alt="{{ $related['name'] }}">
-                    <div class="product-info">
-                        <h3>{{ $related['name'] }}</h3>
-                        <p class="price">Rp{{ number_format($related['price'], 0, ',', ',') }} / {{ $related['unit'] }}</p>
+                    <p class="review-comment">{{ $review->comment }}</p>
+                    <div class="review-actions">
+                        <button onclick="toggleReviewLike({{ $review->id }})" class="like-btn">
+                            <img src="{{ asset('images/like.png') }}" alt="Like">
+                            <span>{{ $review->likes }}</span>
+                        </button>
                     </div>
                 </div>
                 @endforeach
-            </div>
+            @else
+                <p class="no-reviews">No reviews yet.</p>
+            @endif
         </div>
     </main>
+
+    <script>
+        // Quantity control
+        document.querySelectorAll('.qty-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                const currentValue = parseInt(input.value);
+                const max = parseInt(input.max);
+                
+                if (this.classList.contains('minus') && currentValue > 1) {
+                    input.value = currentValue - 1;
+                } else if (this.classList.contains('plus') && currentValue < max) {
+                    input.value = currentValue + 1;
+                }
+            });
+        });
+
+        // Favorite toggle
+        function toggleFavorite(productId) {
+            fetch(`/catalog/${productId}/favorite`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const btn = document.querySelector('.favorite-btn');
+                    btn.classList.toggle('active');
+                }
+            });
+        }
+
+        // Review like toggle
+        function toggleReviewLike(reviewId) {
+            fetch(`/catalog/{{ $product->id }}/reviews/${reviewId}/like`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const likeCount = document.querySelector(`[data-review-id="${reviewId}"] .like-count`);
+                    likeCount.textContent = data.likes;
+                }
+            });
+        }
+    </script>
 </body>
 </html> 
