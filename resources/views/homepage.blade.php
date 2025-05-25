@@ -18,11 +18,11 @@
 
     <div class="navbar">
       <ul>
-        <li><a href="#">Beranda</a></li>
-        <li><a href="#">Katalog</a></li>
-        <li><a href="#">Favorit</a></li>
-        <li><a href="#">Keranjang</a></li>
-        <li><a href="#">Riwayat Pemesanan</a></li>
+        <li><a href="{{ route('home') }}" class="{{ request()->routeIs('home') ? 'active' : '' }}">Home</a></li>
+        <li><a href="{{ route('catalog') }}" class="{{ request()->routeIs('catalog') ? 'active' : '' }}">Catalog</a></li>
+        <li><a href="{{ route('favorites') }}" class="{{ request()->routeIs('favorites') ? 'active' : '' }}">Favorites</a></li>
+        <li><a href="{{ route('cart') }}" class="{{ request()->routeIs('cart') ? 'active' : '' }}">Cart</a></li>
+        <li><a href="{{ route('orders') }}" class="{{ request()->routeIs('orders') ? 'active' : '' }}">Order History</a></li>
       </ul>
 
       <div class="search-bar">
@@ -31,11 +31,16 @@
       </div>
 
       <div class="cart-icon">
-        <a href="#"><img src="{{ asset('images/cart.png') }}" alt="Cart"></a>
+        <a href="{{ route('cart') }}"><img src="{{ asset('images/cart.png') }}" alt="Cart"></a>
       </div>
 
       <div class="user-icon">
-        <a href="#"><img src="{{ asset('images/user.png') }}" alt="User"></a>
+        <form method="POST" action="{{ route('logout') }}">
+          @csrf
+          <button type="submit" class="logout-button">
+            <img src="{{ asset('images/user.png') }}" alt="User">
+          </button>
+        </form>
       </div>
     </div>
   </div>
@@ -47,141 +52,139 @@
   </div>
 
   <div class="content">
-    <!-- Kategori Unggulan -->
+    <!-- Featured Categories -->
     <div class="section">
-      <h2>Kategori Unggulan</h2>
-      <p>Temukan barang-barang daur ulang dari berbagai jenis limbah. Siap jadi solusi kreatif dan ramah lingkungan!</p>
-      <button>Lihat selengkapnya</button>
+      <h2>Featured Categories</h2>
+      <p>Discover recycled items from various types of waste. Ready to be your creative and eco-friendly solution!</p>
+      <button>View More</button>
 
       <div class="categories">
         <div class="category">
-          <img src="images/Product Image.png" alt="Limbah Plastik">
-          <h3>Limbah Plastik</h3>
+          <img src="{{ asset('images/Product Image.png') }}" alt="Plastic Waste">
+          <h3>Plastic Waste</h3>
         </div>
         <div class="category">
-          <img src="images/Product Image (1).png" alt="Limbah Kayu">
-          <h3>Limbah Kayu</h3>
+          <img src="{{ asset('images/Product Image (1).png') }}" alt="Wood Waste">
+          <h3>Wood Waste</h3>
         </div>
         <div class="category">
-          <img src="images/Product Image (2).png" alt="Limbah Kain dan Tekstil">
-          <h3>Limbah Kain dan Tekstil</h3>
+          <img src="{{ asset('images/Product Image (2).png') }}" alt="Fabric and Textile Waste">
+          <h3>Fabric and Textile Waste</h3>
         </div>
       </div>
     </div>
 
-    <!-- Pilihan Favorit -->
+    <!-- Popular Choices -->
     <div class="section">
-      <h2>Pilihan Favorit</h2>
-      <p>Produk terpopuler yang paling banyak dicari. Limbah berkualitas yang sudah terbukti bernilai!</p>
-      <button>Lihat selengkapnya</button>
+      <h2>Popular Choices</h2>
+      <p>Most sought-after products. Quality waste materials that have proven their value!</p>
+      <button>View More</button>
 
       <div class="favorites">
         <div class="favorite-item">
-          <img src="images/tekstil.png" alt="Limbah Kulit Sintetis">
-          <h3>Limbah Kulit Sintetis</h3>
-          <p>Rp.28.000 / 1m</p>
+          <img src="{{ asset('images/tekstil.png') }}" alt="Synthetic Leather Waste">
+          <h3>Synthetic Leather Waste</h3>
+          <p>Rp.28,000 / 1m</p>
           <div class="favorite-info">
             <div class="market-info">
               <p>RecycleLeather</p>
-              <img src="" alt="">
+              <img src="{{ asset('images/market.png') }}" alt="">
             </div>
             <div class="rating-info">
               <p>4.8 (100+)</p>
-              <img src="#" alt="">
+              <img src="{{ asset('images/star.png') }}" alt="">
             </div>
           </div>
         </div>
 
         <div class="favorite-item">
-          <img src="images/Product Image (3).png" alt="Botol Kaca Bekas">
-          <h3>Botol Kaca Bekas</h3>
-          <p>Rp.7.500 / 1kg</p>
+          <img src="{{ asset('images/Product Image (3).png') }}" alt="Used Glass Bottles">
+          <h3>Used Glass Bottles</h3>
+          <p>Rp.7,500 / 1kg</p>
           <div class="favorite-info">
             <div class="market-info">
               <p>RecycleGlass</p>
-              <img src="#" alt="">
+              <img src="{{ asset('images/market.png') }}" alt="">
             </div>
             <div class="rating-info">
               <p>4.5 (50+)</p>
-              <img src="#" alt="">
+              <img src="{{ asset('images/star.png') }}" alt="">
             </div>
           </div>
         </div>
 
         <div class="favorite-item">
-          <img src="images/Product Image (4).png" alt="Sisa Mozaik Keramik">
-          <h3>Sisa Mozaik Keramik</h3>
-          <p>Rp.20.000 / 1kg</p>
+          <img src="{{ asset('images/Product Image (4).png') }}" alt="Ceramic Mosaic Remnants">
+          <h3>Ceramic Mosaic Remnants</h3>
+          <p>Rp.20,000 / 1kg</p>
           <div class="favorite-info">
             <div class="market-info">
               <p>RecycleCeramics</p>
-              <img src="#" alt="">
+              <img src="{{ asset('images/market.png') }}" alt="">
             </div>
             <div class="rating-info">
               <p>4.9 (200+)</p>
-              <img src="#" alt="">
+              <img src="{{ asset('images/star.png') }}" alt="">
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Produk Terbaru -->
+    <!-- New Products -->
     <div class="section">
-      <h2>Produk Terbaru</h2>
-      <p>Koleksi terbaru dari limbah pilihan. Temukan potensi dalam limbah terkini!</p>
-      <button>Lihat selengkapnya</button>
+      <h2>New Products</h2>
+      <p>Latest collection of selected waste materials. Discover the potential in recent waste!</p>
+      <button>View More</button>
 
       <div class="favorites">
         <div class="favorite-item">
-          <img src="images/tembaga.png" alt="Kabel Tembaga Bekas">
-          <h3>Kabel Tembaga Bekas</h3>
-          <p>Rp.28.000 / 1m</p>
+          <img src="{{ asset('images/tembaga.png') }}" alt="Used Copper Cables">
+          <h3>Used Copper Cables</h3>
+          <p>Rp.28,000 / 1m</p>
           <div class="favorite-info">
             <div class="market-info">
-              <p>RecycleLeather</p>
-              <img src="#" alt="">
+              <p>RecycleCopper</p>
+              <img src="{{ asset('images/market.png') }}" alt="">
             </div>
             <div class="rating-info">
               <p>4.8 (100+)</p>
-              <img src="#" alt="">
+              <img src="{{ asset('images/star.png') }}" alt="">
             </div>
           </div>
         </div>
 
         <div class="favorite-item">
-          <img src="images/Product Image (5).png" alt="Botol Kaca Bekas">
-          <h3>Kain Linen Campuran</h3>
-          <p>Rp.7.500 / 1kg</p>
+          <img src="{{ asset('images/Product Image (5).png') }}" alt="Mixed Linen Fabric">
+          <h3>Mixed Linen Fabric</h3>
+          <p>Rp.7,500 / 1kg</p>
           <div class="favorite-info">
             <div class="market-info">
-              <p>RecycleGlass</p>
-              <img src="#" alt="">
+              <p>RecycleFabric</p>
+              <img src="{{ asset('images/market.png') }}" alt="">
             </div>
             <div class="rating-info">
               <p>4.5 (50+)</p>
-              <img src="#" alt="">
+              <img src="{{ asset('images/star.png') }}" alt="">
             </div>
           </div>
         </div>
 
         <div class="favorite-item">
-          <img src="images/Product Image (6).png" alt="Sisa Mozaik Keramik">
-          <h3>Tutup Kaleng Logam Bekas</h3>
-          <p>Rp.20.000 / 1kg</p>
+          <img src="{{ asset('images/Product Image (6).png') }}" alt="Used Metal Can Lids">
+          <h3>Used Metal Can Lids</h3>
+          <p>Rp.20,000 / 1kg</p>
           <div class="favorite-info">
             <div class="market-info">
-              <p>RecycleCeramics</p>
-              <img src="#" alt="">
+              <p>RecycleMetal</p>
+              <img src="{{ asset('images/market.png') }}" alt="">
             </div>
             <div class="rating-info">
               <p>4.9 (200+)</p>
-              <img src="#" alt="">
+              <img src="{{ asset('images/star.png') }}" alt="">
             </div>
           </div>
         </div>
-
-        
       </div>
     </div>
 
@@ -189,31 +192,31 @@
       <hr>
       <div class="footer-content">
         <div class="footer-left">
-          <h1>Daftar untuk Info Terbaru</h1>
-          <p>Jadilah yang pertama tahu tentang produk baru dan penawaran spesial.</p>
+          <h1>Sign Up for Updates</h1>
+          <p>Be the first to know about new products and special offers.</p>
         </div>
         <div class="footer-right">
           <div class="about_us">
-            <p class="about_us_title">Tentang Kami</p>
+            <p class="about_us_title">About Us</p>
             <ul class="about_us_list"> 
-              <li><a href="#">Cerita Kami</a></li>
-              <li><a href="#">Misi & Visi</a></li>
-              <li><a href="#">Prinsip Keberlanjutan</a></li>
-              <li><a href="#">Partner & Komunitas</a></li>
-              <li><a href="#">Testimoni</a></li>
-              <li><a href="#">Media & Publikasi</a></li>
+              <li><a href="#">Our Story</a></li>
+              <li><a href="#">Mission & Vision</a></li>
+              <li><a href="#">Sustainability Principles</a></li>
+              <li><a href="#">Partners & Community</a></li>
+              <li><a href="#">Testimonials</a></li>
+              <li><a href="#">Media & Publications</a></li>
             </ul>
           </div>
           
-          <div class="bantuan">
-            <p class="batuan_title">Bantuan</p>
-            <ul class="bantuan_list">
+          <div class="help">
+            <p class="help_title">Help</p>
+            <ul class="help_list">
               <li><a href="#">FAQ</a></li>
-              <li><a href="#">Cara Belanja</a></li>
-              <li><a href="#">Cara Pengiriman</a></li>
-              <li><a href="#">Kebijakan Pengembalian</a></li>
-              <li><a href="#">Ketentuan Layanan</a></li>
-              <li><a href="#">Hubungi Kami</a></li>
+              <li><a href="#">How to Shop</a></li>
+              <li><a href="#">Shipping Information</a></li>
+              <li><a href="#">Return Policy</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Contact Us</a></li>
             </ul>
           </div>
         </div>

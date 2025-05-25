@@ -1,61 +1,169 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Econnect - E-commerce Platform for Recyclable Materials
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Econnect is a web-based e-commerce platform designed to facilitate the buying and selling of recyclable materials. The platform connects sellers who have recyclable materials with buyers who can repurpose these materials, promoting sustainability and waste reduction.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- User authentication (Buyer and Seller roles)
+- Product catalog with categories and search functionality
+- Advanced filtering and sorting options
+- Product management for sellers
+- Shopping cart functionality
+- Order management system
+- Product reviews and ratings
+- Favorite products system
+- Responsive design for all devices
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Prerequisites
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Before you begin, ensure you have the following installed on your system:
 
-## Learning Laravel
+- PHP 8.1 or higher
+- Composer
+- Node.js and NPM
+- MySQL 5.7 or higher
+- Git
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Installation Guide
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Follow these steps to set up the project locally:
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/yourusername/econnect.git
+   cd econnect
+   ```
 
-## Laravel Sponsors
+2. **Install PHP Dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+3. **Set Up Environment File**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-### Premium Partners
+4. **Configure Database**
+   - Open `.env` file and update the following settings:
+     ```
+     DB_CONNECTION=mysql
+     DB_HOST=127.0.0.1
+     DB_PORT=3306
+     DB_DATABASE=econnect
+     DB_USERNAME=your_username
+     DB_PASSWORD=your_password
+     ```
+   - Create a new MySQL database named `econnect`
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+5. **Run Migrations and Seeders**
+   ```bash
+   php artisan migrate
+   php artisan db:seed
+   ```
+
+6. **Set Up Storage**
+   ```bash
+   php artisan storage:link
+   ```
+
+7. **Start the Development Server**
+   ```bash
+   npm run dev
+   php artisan serve
+   ```
+
+## Testing the Application
+
+1. **Access the Application**
+   - Open your browser and go to `http://localhost:8000`
+
+2. **Test Buyer Account**
+   - Login using these credentials:
+     ```
+     Email: buyer@econnect.com
+     Password: password123
+     ```
+   - You can:
+     - Browse the catalog
+     - Add items to cart
+     - Place orders
+     - Leave reviews
+     - Add products to favorites
+
+3. **Test Seller Account**
+   - Login using these credentials:
+     ```
+     Email: seller@econnect.com
+     Password: password123
+     ```
+   - You can:
+     - Add new products
+     - Manage existing products
+     - View orders
+     - Respond to reviews
+
+## Common Issues and Solutions
+
+1. **Storage Link Issues**
+   - If images are not displaying, try:
+     ```bash
+     rm public/storage
+     php artisan storage:link
+     ```
+
+2. **Database Issues**
+   - If you encounter database errors, try:
+     ```bash
+     php artisan config:clear
+     php artisan migrate:fresh --seed
+     ```
+
+3. **Composer Issues**
+   - If you have dependency issues:
+     ```bash
+     composer clear-cache
+     composer update
+     ```
+
+## Project Structure
+
+- `app/` - Contains the core code of the application
+- `database/` - Contains database migrations and seeders
+- `public/` - Contains publicly accessible files
+- `resources/` - Contains views and frontend assets
+- `routes/` - Contains route definitions
+- `storage/` - Contains uploaded files and logs
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+If you'd like to contribute to this project:
 
-## Code of Conduct
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/improvement`)
+3. Make your changes
+4. Commit your changes (`git commit -am 'Add new feature'`)
+5. Push to the branch (`git push origin feature/improvement`)
+6. Create a Pull Request
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Support
 
-## Security Vulnerabilities
+If you encounter any issues or need assistance:
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. Check the Common Issues section above
+2. Review the Laravel documentation: https://laravel.com/docs
+3. Contact the project maintainer
+4. Create an issue in the GitHub repository
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Built with Laravel Framework
+- Uses Bootstrap for styling
+- Icons from FontAwesome
+- Product images sourced from project contributors
