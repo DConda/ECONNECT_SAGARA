@@ -10,7 +10,7 @@ class CatalogController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('seller');
+        $query = Product::with(['seller', 'reviews']);
 
         // Apply search filter
         if ($request->has('search')) {

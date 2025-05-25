@@ -82,14 +82,14 @@
                 <div class="product-grid">
                     @foreach($products as $product)
                     <div class="product-card">
-                        <img src="{{ asset('images/' . $product['image']) }}" alt="{{ $product['name'] }}">
+                        <img src="{{ asset($product->main_image) }}" alt="{{ $product->name }}">
                         <div class="product-info">
-                            <h3>{{ $product['name'] }}</h3>
-                            <p class="price">Rp{{ number_format($product['price'], 0, ',', ',') }} / {{ $product['unit'] }}</p>
+                            <h3>{{ $product->name }}</h3>
+                            <p class="price">Rp{{ number_format($product->price, 0, ',', ',') }} / {{ $product->unit }}</p>
                             <div class="seller-info">
-                                <span class="seller">{{ $product['seller'] }}</span>
+                                <span class="seller">{{ $product->seller->name }}</span>
                                 <div class="rating">
-                                    <span>{{ $product['rating'] }} ({{ $product['reviews'] }})</span>
+                                    <span>{{ number_format($product->average_rating, 1) }} ({{ $product->reviews_count }})</span>
                                     <img src="{{ asset('images/star.png') }}" alt="Rating">
                                 </div>
                             </div>
