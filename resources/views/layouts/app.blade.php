@@ -1,80 +1,61 @@
-<!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- CSRF Token -->
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-
-    <title>{{ config('app.name', 'Laravel') }}</title>
-
-    <!-- Fonts -->
-    <link rel="dns-prefetch" href="//fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=Nunito" rel="stylesheet">
-
-    <!-- Scripts -->
-    @vite(['resources/sass/app.scss', 'resources/js/app.js'])
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Econnect')</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- Add Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    @yield('styles')
 </head>
-<body>
-    <div id="app">
-        <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
-            <div class="container">
-                <a class="navbar-brand" href="{{ url('/') }}">
-                    {{ config('app.name', 'Laravel') }}
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="{{ __('Toggle navigation') }}">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav me-auto">
-
-                    </ul>
-
-                    <!-- Right Side Of Navbar -->
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Authentication Links -->
-                        @guest
-                            @if (Route::has('login'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('login') }}">{{ __('Login') }}</a>
-                                </li>
-                            @endif
-
-                            @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link" href="{{ route('register') }}">{{ __('Register') }}</a>
-                                </li>
-                            @endif
-                        @else
-                            <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
-                                    {{ Auth::user()->name }}
-                                </a>
-
-                                <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
-                                       onclick="event.preventDefault();
-                                                     document.getElementById('logout-form').submit();">
-                                        {{ __('Logout') }}
-                                    </a>
-
-                                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                    </form>
-                                </div>
-                            </li>
-                        @endguest
-                    </ul>
+<body class="bg-gray-100">
+    <nav class="bg-green-900 text-white shadow-lg">
+        <div class="container mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-8">
+                    <a href="{{ route('home') }}" class="text-xl font-semibold hover:text-green-200">
+                        Econnect
+                    </a>
+                    @auth
+                        <div class="hidden md:flex items-center space-x-6">
+                            <a href="{{ route('home') }}" class="hover:text-green-200 {{ request()->routeIs('home') ? 'text-green-200' : '' }}">
+                                Home
+                            </a>
+                            <a href="{{ route('catalog') }}" class="hover:text-green-200 {{ request()->routeIs('catalog') ? 'text-green-200' : '' }}">
+                                Catalog
+                            </a>
+                            <a href="{{ route('favorites') }}" class="hover:text-green-200 {{ request()->routeIs('favorites') ? 'text-green-200' : '' }}">
+                                Favorites
+                            </a>
+                            <a href="{{ route('cart') }}" class="hover:text-green-200 {{ request()->routeIs('cart') ? 'text-green-200' : '' }}">
+                                Cart
+                            </a>
+                            <a href="{{ route('orders') }}" class="hover:text-green-200 {{ request()->routeIs('orders') ? 'text-green-200' : '' }}">
+                                Order History
+                            </a>
+                        </div>
+                    @endauth
+                </div>
+                <div class="flex items-center space-x-4">
+                    @guest
+                        <a href="{{ route('login') }}" class="hover:text-green-200">Login</a>
+                        <a href="{{ route('register') }}" class="hover:text-green-200">Register</a>
+                    @else
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="hover:text-green-200">Logout</button>
+                        </form>
+                    @endguest
                 </div>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <main class="py-4">
-            @yield('content')
-        </main>
-    </div>
+    <main class="container mx-auto px-6 py-8">
+        @yield('content')
+    </main>
+
+    @yield('scripts')
 </body>
 </html>
