@@ -22,6 +22,13 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar',
+        'bio',
+        'phone',
+        'address',
+        'birth_date',
+        'gender',
+        'social_media'
     ];
 
     /**
@@ -42,6 +49,8 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'birth_date' => 'date',
+        'social_media' => 'array'
     ];
 
     public function products()

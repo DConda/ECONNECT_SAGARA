@@ -14,7 +14,7 @@
                 </a>
             </div>
             <div class="user-profile">
-                <span>{{ Auth::user()->name }}</span>
+                <a href="{{ route('profile.show') }}" class="user-name">{{ Auth::user()->name }}</a>
             </div>
         </div>
     </div>
@@ -30,4 +30,17 @@
             @endif
         </ul>
     </nav>
-</header> 
+</header>
+
+<style>
+.user-name {
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.user-name:hover {
+    color: #1a5d1a;
+}
+</style> 

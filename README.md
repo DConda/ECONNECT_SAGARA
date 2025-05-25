@@ -37,6 +37,7 @@ Follow these steps to set up the project locally:
 2. **Install PHP Dependencies**
    ```bash
    composer install
+   npm install
    ```
 
 3. **Set Up Environment File**
@@ -70,6 +71,7 @@ Follow these steps to set up the project locally:
 
 7. **Start the Development Server**
    ```bash
+   npm run dev
    php artisan serve
    ```
 
