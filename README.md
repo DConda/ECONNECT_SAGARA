@@ -18,9 +18,9 @@ Econnect is a web-based e-commerce platform designed to facilitate the buying an
 
 Before you begin, ensure you have the following installed on your system:
 
-- PHP 8.1 or higher
-- Composer
-- Node.js and NPM
+- PHP 8.2 or higher
+- Composer (latest version)
+- Node.js (LTS version recommended) and NPM
 - MySQL 5.7 or higher
 - Git
 
@@ -28,25 +28,54 @@ Before you begin, ensure you have the following installed on your system:
 
 Follow these steps to set up the project locally:
 
-1. **Clone the Repository**
+1. **Create New Laravel Project**
    ```bash
-   git clone https://github.com/yourusername/econnect.git
+   composer create-project laravel/laravel econnect
    cd econnect
    ```
 
-2. **Install PHP Dependencies**
+2. **Install Required PHP Packages**
    ```bash
-   composer install
-   npm install
+   # Install Laravel Sanctum for authentication
+   composer require laravel/sanctum
+   
+   # Install Laravel UI for authentication scaffolding
+   composer require laravel/ui
+   
+   # Install Laravel Tinker for database interaction
+   composer require laravel/tinker
    ```
 
-3. **Set Up Environment File**
+3. **Install Development PHP Packages**
+   ```bash
+   # Install testing and development tools
+   composer require --dev fakerphp/faker
+   composer require --dev laravel/pail
+   composer require --dev laravel/pint
+   composer require --dev laravel/sail
+   composer require --dev mockery/mockery
+   composer require --dev nunomaduro/collision
+   composer require --dev phpunit/phpunit
+   ```
+
+4. **Install Node.js Dependencies**
+   ```bash
+   # Install all required Node.js packages
+   npm install @tailwindcss/vite@4.0.0
+   npm install axios@1.8.2
+   npm install concurrently@9.0.1
+   npm install laravel-vite-plugin@1.2.0
+   npm install tailwindcss@4.0.0
+   npm install vite@6.2.4
+   ```
+
+5. **Set Up Environment File**
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
 
-4. **Configure Database**
+6. **Configure Database**
    - Open `.env` file and update the following settings:
      ```
      DB_CONNECTION=mysql
@@ -58,22 +87,95 @@ Follow these steps to set up the project locally:
      ```
    - Create a new MySQL database named `econnect`
 
-5. **Run Migrations and Seeders**
+7. **Configure Sanctum**
+   ```bash
+   # Publish Sanctum configuration
+   php artisan vendor:publish --provider="Laravel\Sanctum\SanctumServiceProvider"
+   
+   # Generate Sanctum security key
+   php artisan sanctum:install
+   ```
+   
+   Add these lines to your `.env` file:
+   ```
+   SANCTUM_STATEFUL_DOMAINS=localhost:8000,localhost:3000
+   SESSION_DOMAIN=localhost
+   ```
+   
+   Update your `app/Http/Kernel.php` file to add Sanctum middleware in the 'api' middleware group:
+   ```php
+   'api' => [
+       \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+       'throttle:api',
+       \Illuminate\Routing\Middleware\SubstituteBindings::class,
+   ],
+   ```
+
+8. **Set Up Authentication UI**
+   ```bash
+   # Generate authentication scaffolding
+   php artisan ui bootstrap --auth
+   
+   # Compile the fresh scaffolding
+   npm install && npm run dev
+   ```
+
+9. **Run Migrations and Seeders**
    ```bash
    php artisan migrate
    php artisan db:seed
    ```
 
-6. **Set Up Storage**
-   ```bash
-   php artisan storage:link
-   ```
+10. **Set Up Storage Link**
+    ```bash
+    php artisan storage:link
+    ```
 
-7. **Start the Development Server**
-   ```bash
-   npm run dev
-   php artisan serve
-   ```
+11. **Build Assets**
+    ```bash
+    npm run build
+    ```
+
+12. **Start the Development Server**
+    For development with hot reload:
+    ```bash
+    # Terminal 1: Start Laravel server
+    php artisan serve
+
+    # Terminal 2: Start Vite development server
+    npm run dev
+    ```
+
+    For production:
+    ```bash
+    npm run build
+    php artisan serve
+    ```
+
+## Dependencies List
+
+### PHP Dependencies (via Composer)
+- Laravel Framework v12.0
+- Laravel Sanctum v4.1
+- Laravel Tinker v2.10.1
+- Laravel UI v4.6
+
+### Development Dependencies (PHP)
+- FakerPHP/Faker v1.23
+- Laravel Pail v1.2.2
+- Laravel Pint v1.13
+- Laravel Sail v1.41
+- Mockery v1.6
+- Nunomaduro Collision v8.6
+- PHPUnit v11.5.3
+
+### Node.js Dependencies
+- @tailwindcss/vite v4.0.0
+- axios v1.8.2
+- concurrently v9.0.1
+- laravel-vite-plugin v1.2.0
+- tailwindcss v4.0.0
+- vite v6.2.4
 
 ## Testing the Application
 
